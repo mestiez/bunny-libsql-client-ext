@@ -4,6 +4,9 @@ public static class LibSqlTypeExtensions
 {
     public static bool IsLibSqlSupportedType(this Type type)
     {
+        if (LibSqlTypeConverters.Converters.ContainsKey(type))
+            return true;
+        
         if (type == typeof(int))
             return true;
         if (type == typeof(long))
@@ -17,12 +20,12 @@ public static class LibSqlTypeExtensions
         if (type == typeof(bool))
             return true;
         if (type == typeof(DateTime))
-            return true;        
+            return true;
         if (type == typeof(F32Blob))
             return true;
         if (type == typeof(byte[]))
             return true;
-        
+
         if (type == typeof(int?))
             return true;
         if (type == typeof(long?))

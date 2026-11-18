@@ -17,7 +17,10 @@ public class SqlQueryBuilder
             if (property.PropertyType.IsLibSqlSupportedType() && property.GetValue(item) != null)
             {
                 setClauses.Add($"{property.Name} = ?");
-                parameters.Add(property.GetValue(item));
+                var v = property.GetValue(item);
+                if (LibSqlTypeConverters.Converters.TryGetValue(property.PropertyType, out var converter))
+                    v = converter.Serialise(v);
+                parameters.Add(v);
             }
         }
         var setClauseString = string.Join(", ", setClauses);
@@ -50,6 +53,9 @@ public class SqlQueryBuilder
                 {
                     value = libSqlType.GetLibSqlJsonValue();
                 }
+                
+                if (LibSqlTypeConverters.Converters.TryGetValue(property.PropertyType, out var converter))
+                    value = converter.Serialise(value);
                 
                 columns.Add(property.Name);
                 values.Add($"?");

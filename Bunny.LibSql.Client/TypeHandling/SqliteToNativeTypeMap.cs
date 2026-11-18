@@ -8,11 +8,11 @@ public static class SqliteToNativeTypeMap
     public static string ToSqlType(PropertyInfo property)
     {
         var t = property.PropertyType;
-        if (t == typeof(int)  || t == typeof(long) || t == typeof(bool) || t == typeof(DateTime))
+        if (t == typeof(int) || t == typeof(long) || t == typeof(bool) || t == typeof(DateTime))
             return "INTEGER";
-        if (t == typeof(float)|| t == typeof(double) || t == typeof(decimal))
+        if (t == typeof(float) || t == typeof(double) || t == typeof(decimal))
             return "REAL";
-        if (t == typeof(string))
+        if (t == typeof(string) || LibSqlTypeConverters.Converters.ContainsKey(t))
             return "TEXT";
         if (t == typeof(byte[]))
             return "BLOB";
@@ -21,12 +21,13 @@ public static class SqliteToNativeTypeMap
             var size = F32Blob.GetSize(property);
             return $"F32_BLOB({size})";
         }
+
         // Nullable types
-        if (t == typeof(int?)  || t == typeof(long?) || t == typeof(bool?) || t == typeof(DateTime?))
+        if (t == typeof(int?) || t == typeof(long?) || t == typeof(bool?) || t == typeof(DateTime?))
             return "INTEGER";
-        if (t == typeof(float?)|| t == typeof(double?) || t == typeof(decimal?))
+        if (t == typeof(float?) || t == typeof(double?) || t == typeof(decimal?))
             return "REAL";
-        
+
         throw new NotSupportedException($"No mapping for {t.Name}");
     }
 }
